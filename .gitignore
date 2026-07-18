@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+build/
+**/dist/
+
+# Environment / secrets
+.env
+**/.env
+!**/.env.example
+
+# Local database (pilot) — never commit financial data
+db/*.db
+db/*.db-shm
+db/*.db-wal
+
+# Uploaded financial documents — never commit
+backend/uploads/**/*
+!backend/uploads/**/.gitkeep
+
+# Logs / OS
+*.log
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

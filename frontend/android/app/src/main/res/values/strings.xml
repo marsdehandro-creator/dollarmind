@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">DollarMind</string>
+    <string name="title_activity_main">DollarMind</string>
+    <string name="package_name">com.dollarmind.app</string>
+    <string name="custom_url_scheme">com.dollarmind.app</string>
+</resources>

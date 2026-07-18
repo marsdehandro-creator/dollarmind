@@ -1,0 +1,26 @@
+{
+  "$schema": "./category-rules.schema.json",
+  "version": 1,
+  "description": "Seed categorization rules. Higher priority wins. User overrides create learned rules at runtime (see docs/data-model.md §4.2).",
+  "categories": [
+    "Groceries",
+    "Transport",
+    "Dining",
+    "Utilities",
+    "Rent",
+    "Income",
+    "Savings",
+    "Entertainment",
+    "Health",
+    "Uncategorized"
+  ],
+  "rules": [
+    { "matchType": "contains", "pattern": "woolworths", "category": "Groceries", "priority": 100 },
+    { "matchType": "contains", "pattern": "checkers", "category": "Groceries", "priority": 100 },
+    { "matchType": "contains", "pattern": "pick n pay", "category": "Groceries", "priority": 100 },
+    { "matchType": "contains", "pattern": "uber", "category": "Transport", "priority": 100 },
+    { "matchType": "contains", "pattern": "engen", "category": "Transport", "priority": 90 },
+    { "matchType": "contains", "pattern": "netflix", "category": "Entertainment", "priority": 100 },
+    { "matchType": "contains", "pattern": "salary", "category": "Income", "priority": 120 }
+  ]
+}

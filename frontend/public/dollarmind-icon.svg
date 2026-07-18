@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="DollarMind">
+  <defs>
+    <linearGradient id="dm-crown" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#007BFF"/>
+      <stop offset="28%" stop-color="#00C6FF"/>
+      <stop offset="50%" stop-color="#FFD700"/>
+      <stop offset="72%" stop-color="#FFB300"/>
+      <stop offset="100%" stop-color="#C0C0C0"/>
+    </linearGradient>
+    <linearGradient id="dm-base" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C0C0C0"/>
+      <stop offset="50%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#C0C0C0"/>
+    </linearGradient>
+    <radialGradient id="dm-bg" cx="50%" cy="40%" r="75%">
+      <stop offset="0%" stop-color="#121A3A"/>
+      <stop offset="100%" stop-color="#0A0F2C"/>
+    </radialGradient>
+    <linearGradient id="dm-glow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#007BFF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#00C6FF"/>
+      <stop offset="100%" stop-color="#007BFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#dm-bg)"/>
+  <g transform="translate(136,150) scale(1.0)">
+    <!-- crown -->
+    <path d="M0,180 L26,66 L60,138 L104,44 L128,120 L155,28 L182,120 L226,44 L270,138 L304,66 L330,180 Z"
+          fill="url(#dm-crown)" stroke="#C0C0C0" stroke-width="3" stroke-linejoin="round"/>
+    <!-- base bar -->
+    <rect x="6" y="184" width="318" height="26" rx="6" fill="url(#dm-base)"/>
+    <!-- glowing base line -->
+    <rect x="70" y="193" width="190" height="6" rx="3" fill="url(#dm-glow)"/>
+    <!-- luminous points -->
+    <circle cx="155" cy="24" r="5" fill="#FFF3B0"/>
+    <circle cx="104" cy="40" r="3" fill="#EAF6FF"/>
+    <circle cx="226" cy="40" r="3" fill="#EAF6FF"/>
+  </g>
+</svg>

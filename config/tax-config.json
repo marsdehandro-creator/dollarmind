@@ -1,0 +1,19 @@
+{
+  "$schema": "./tax-config.schema.json",
+  "description": "SA tax reference data for educational guidance only — NOT tax advice. Rates/thresholds change per tax year; always version them (see docs/requirements.md F10).",
+  "taxYear": "2026/2027",
+  "currency": "ZAR",
+  "disclaimer": "General information only. Not tax or legal advice. Consult a registered tax practitioner or SARS.",
+  "brackets": [
+    { "min": 0, "max": null, "ratePercent": 0, "note": "Placeholder — populate official SARS brackets for the target tax year in Phase 6." }
+  ],
+  "rebates": {
+    "primary": 0,
+    "note": "Placeholder values. Do not present as official SARS figures."
+  },
+  "uif": {
+    "employeeRatePercent": 1.0,
+    "monthlyCeiling": null,
+    "note": "Placeholder."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "./app-config.schema.json",
+  "appName": "DollarMind",
+  "environment": "pilot",
+  "locale": {
+    "currency": "ZAR",
+    "country": "ZA",
+    "dateFormat": "yyyy-MM-dd"
+  },
+  "taxYear": {
+    "startMonth": 3,
+    "startDay": 1
+  },
+  "upload": {
+    "maxFileSizeBytes": 10485760,
+    "allowedMimeTypes": ["text/csv", "application/pdf", "image/png", "image/jpeg"]
+  },
+  "features": {
+    "goals": false,
+    "advisor": false,
+    "sarsGuidance": false
+  }
+}

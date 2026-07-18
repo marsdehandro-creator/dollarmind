@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2732 2732" role="img" aria-label="DollarMind splash">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="70%">
+      <stop offset="0%" stop-color="#121A3A"/><stop offset="100%" stop-color="#0A0F2C"/>
+    </radialGradient>
+    <linearGradient id="c" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#007BFF"/><stop offset="28%" stop-color="#00C6FF"/>
+      <stop offset="50%" stop-color="#FFD700"/><stop offset="72%" stop-color="#FFB300"/><stop offset="100%" stop-color="#C0C0C0"/>
+    </linearGradient>
+    <linearGradient id="b" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#C0C0C0"/><stop offset="50%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#C0C0C0"/>
+    </linearGradient>
+  </defs>
+  <rect width="2732" height="2732" fill="url(#bg)"/>
+  <g transform="translate(1036,1100) scale(2.0)">
+    <path d="M0,180 L26,66 L60,138 L104,44 L128,120 L155,28 L182,120 L226,44 L270,138 L304,66 L330,180 Z"
+          fill="url(#c)" stroke="#C0C0C0" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="6" y="184" width="318" height="26" rx="6" fill="url(#b)"/>
+  </g>
+  <text x="1366" y="1740" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="150" font-weight="800" letter-spacing="12">
+    <tspan fill="#C0C0C0">DOLLAR</tspan><tspan fill="#00C6FF">MIND</tspan>
+  </text>
+</svg>

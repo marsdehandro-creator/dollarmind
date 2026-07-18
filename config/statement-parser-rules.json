@@ -1,0 +1,21 @@
+{
+  "$schema": "./statement-parser-rules.schema.json",
+  "version": 1,
+  "description": "Maps bank-specific CSV statement formats to normalized transaction fields. Column names are matched case-insensitively against the header row. Extend per bank (see docs/architecture.md §5). Excel/PDF parsing is stubbed for now.",
+  "currency": "ZAR",
+  "csv": {
+    "columns": {
+      "date": ["date", "transaction date", "posting date", "txn date"],
+      "description": ["description", "details", "narrative", "reference", "transaction description"],
+      "amount": ["amount", "value", "transaction amount"],
+      "debit": ["debit", "money out", "debit amount", "withdrawal"],
+      "credit": ["credit", "money in", "credit amount", "deposit"],
+      "balance": ["balance", "running balance", "closing balance"]
+    },
+    "dateFormats": ["yyyy-mm-dd", "dd/mm/yyyy", "dd-mm-yyyy"]
+  },
+  "dedup": {
+    "fuzzyDateToleranceDays": 2,
+    "fuzzySimilarityThreshold": 0.6
+  }
+}

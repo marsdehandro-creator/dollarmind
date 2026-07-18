@@ -1,0 +1,20 @@
+{
+  "$schema": "./salary-parser-rules.schema.json",
+  "version": 1,
+  "description": "Maps employer-specific payslip labels to normalized salary components. Placeholder rules — extend per employer/payroll system (see docs/architecture.md §5). Amounts are parsed from the same line as the matched label.",
+  "currency": "ZAR",
+  "fields": {
+    "gross": ["gross pay", "gross salary", "gross earnings", "total earnings", "gross"],
+    "net": ["net pay", "nett pay", "net salary", "take home", "amount payable", "net"]
+  },
+  "components": [
+    { "code": "basic", "componentType": "earning", "isTaxable": true, "labels": ["basic salary", "basic pay", "basic"] },
+    { "code": "overtime", "componentType": "earning", "isTaxable": true, "labels": ["overtime"] },
+    { "code": "bonus", "componentType": "earning", "isTaxable": true, "labels": ["bonus"] },
+    { "code": "allowance", "componentType": "allowance", "isTaxable": true, "labels": ["travel allowance", "housing allowance", "allowance"] },
+    { "code": "paye", "componentType": "tax", "isTaxable": false, "labels": ["paye", "income tax", "tax"] },
+    { "code": "uif", "componentType": "deduction", "isTaxable": false, "labels": ["uif", "unemployment insurance"] },
+    { "code": "medical", "componentType": "deduction", "isTaxable": false, "labels": ["medical aid", "medical"] },
+    { "code": "pension", "componentType": "contribution", "isTaxable": false, "labels": ["pension", "provident", "retirement annuity", "retirement"] }
+  ]
+}

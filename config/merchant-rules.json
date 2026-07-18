@@ -1,0 +1,29 @@
+{
+  "$schema": "./merchant-rules.schema.json",
+  "version": 1,
+  "description": "Basic keyword-based merchant detection. Each merchant maps keywords (matched against the normalized transaction description) to a display name and a default category. Used both for merchant detection and to seed merchant category_rules (see docs/data-model.md §4.2).",
+  "merchants": [
+    { "merchant": "Woolworths", "category": "Groceries", "keywords": ["woolworths", "woolies"] },
+    { "merchant": "Checkers", "category": "Groceries", "keywords": ["checkers"] },
+    { "merchant": "Pick n Pay", "category": "Groceries", "keywords": ["pick n pay", "picknpay", "pnp"] },
+    { "merchant": "Shoprite", "category": "Groceries", "keywords": ["shoprite"] },
+    { "merchant": "Uber", "category": "Transport", "keywords": ["uber"] },
+    { "merchant": "Bolt", "category": "Transport", "keywords": ["bolt"] },
+    { "merchant": "Engen", "category": "Transport", "keywords": ["engen"] },
+    { "merchant": "Shell", "category": "Transport", "keywords": ["shell"] },
+    { "merchant": "Netflix", "category": "Entertainment", "keywords": ["netflix"] },
+    { "merchant": "Spotify", "category": "Entertainment", "keywords": ["spotify"] },
+    { "merchant": "YouTube", "category": "Entertainment", "keywords": ["youtube", "youtube premium", "google youtube"] },
+    { "merchant": "Showmax", "category": "Entertainment", "keywords": ["showmax"] },
+    { "merchant": "Takealot", "category": "E-commerce", "keywords": ["takealot"] },
+    { "merchant": "Amazon", "category": "E-commerce", "keywords": ["amazon"] },
+    { "merchant": "H&M", "category": "Clothing", "keywords": ["h&m", "h and m"] },
+    { "merchant": "Cotton On", "category": "Clothing", "keywords": ["cotton on"] },
+    { "merchant": "Ocean Basket", "category": "Dining", "keywords": ["ocean basket"] },
+    { "merchant": "Discovery Insure", "category": "Financial Services", "keywords": ["discovery insure", "outsurance", "santam", "momentum"] },
+    { "merchant": "Steers", "category": "Dining", "keywords": ["steers", "nandos", "kfc"] },
+    { "merchant": "Eskom", "category": "Utilities", "keywords": ["eskom", "city power", "municipal"] },
+    { "merchant": "Vodacom", "category": "Utilities", "keywords": ["vodacom", "mtn", "telkom"] },
+    { "merchant": "Dis-Chem", "category": "Health", "keywords": ["dischem", "dis-chem", "clicks"] }
+  ]
+}
