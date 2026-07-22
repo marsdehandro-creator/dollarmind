@@ -10,12 +10,15 @@ import { nowIso } from '@dollarmind/core/utils/id.js';
 import { getLocalDbDriver, persist } from './sqliteDriver.js';
 import { loadBundledMigrations } from './migrations.js';
 import { seedCategories } from './seedCategories.js';
+import { backupBeforeMigrationIfPending } from './migrationBackup.js';
 
 let dbPromise: Promise<LocalDbDriver> | null = null;
 
 async function bootstrap(): Promise<LocalDbDriver> {
   const db = await getLocalDbDriver();
-  await runLocalMigrations(db, loadBundledMigrations());
+  const migrations = loadBundledMigrations();
+  await backupBeforeMigrationIfPending(db, migrations);
+  await runLocalMigrations(db, migrations);
 
   const now = nowIso();
   await db.run(

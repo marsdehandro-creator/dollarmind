@@ -7,6 +7,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { App } from './App.js';
 import { AuthProvider } from './context/AuthContext.js';
 import { PreferencesProvider } from './context/PreferencesContext.js';
+import { PinLockProvider } from './context/PinLockContext.js';
+import { PinLockGate } from './components/security/PinLockGate.js';
 import { getContainer } from './local/container.js';
 import './index.css';
 
@@ -17,11 +19,15 @@ void getContainer();
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <AuthProvider>
-        <PreferencesProvider>
-          <App />
-        </PreferencesProvider>
-      </AuthProvider>
+      <PinLockProvider>
+        <PinLockGate>
+          <AuthProvider>
+            <PreferencesProvider>
+              <App />
+            </PreferencesProvider>
+          </AuthProvider>
+        </PinLockGate>
+      </PinLockProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );

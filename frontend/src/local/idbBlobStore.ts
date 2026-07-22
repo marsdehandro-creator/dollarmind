@@ -38,3 +38,24 @@ export async function saveBlob(key: string, bytes: Uint8Array): Promise<void> {
     tx.onerror = () => reject(tx.error);
   });
 }
+
+/** All keys with the given prefix, ascending — used to find and prune rotating backups. */
+export async function listKeys(prefix: string): Promise<string[]> {
+  const db = await openIdb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const req = tx.objectStore(STORE_NAME).getAllKeys();
+    req.onsuccess = () => resolve((req.result as string[]).filter((k) => k.startsWith(prefix)).sort());
+    req.onerror = () => reject(req.error);
+  });
+}
+
+export async function deleteBlob(key: string): Promise<void> {
+  const db = await openIdb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.objectStore(STORE_NAME).delete(key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
