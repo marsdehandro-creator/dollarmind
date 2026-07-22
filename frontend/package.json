@@ -9,11 +9,12 @@
     "dev": "vite",
     "prebuild": "node scripts/copy-assets.mjs",
     "build": "tsc && vite build",
+    "build:capacitor": "tsc && vite build --base=/",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "cap:sync": "npm run build && cap sync",
-    "cap:android": "npm run build && cap sync android && cap open android",
+    "cap:sync": "npm run build:capacitor && cap sync",
+    "cap:android": "npm run build:capacitor && cap sync android && cap open android",
     "assets:generate": "capacitor-assets generate --android"
   },
   "dependencies": {
