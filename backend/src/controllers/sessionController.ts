@@ -3,7 +3,7 @@
  */
 import type { NextFunction, Request, Response } from 'express';
 import { securityService } from '../services/index.js';
-import { ValidationError } from '../utils/errors.js';
+import { ValidationError } from '@dollarmind/core/utils/errors.js';
 
 export async function listSessions(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {

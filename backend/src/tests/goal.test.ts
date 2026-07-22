@@ -6,10 +6,10 @@ import { createConfiguredDb, type Db } from '../db/index.js';
 import { SqliteGoalRepository } from '../repositories/sqlite/SqliteGoalRepository.js';
 import { SqliteCategoryRepository } from '../repositories/sqlite/SqliteCategoryRepository.js';
 import { SqliteAuditRepository } from '../repositories/sqlite/SqliteAuditRepository.js';
-import { LocalAuditService } from '../services/LocalAuditService.js';
-import { LocalGoalService, computeProgress } from '../services/LocalGoalService.js';
+import { LocalAuditService } from '@dollarmind/core/services/LocalAuditService.js';
+import { LocalGoalService, computeProgress } from '@dollarmind/core/services/LocalGoalService.js';
 import { DEFAULT_TENANT_ID } from '../config/index.js';
-import type { Goal } from '../models/index.js';
+import type { Goal } from '@dollarmind/core/models/index.js';
 
 function goal(overrides: Partial<Goal>): Goal {
   return {

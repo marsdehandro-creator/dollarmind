@@ -4,7 +4,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 import { userSettingsService } from '../services/index.js';
-import { ValidationError } from '../utils/errors.js';
+import { ValidationError } from '@dollarmind/core/utils/errors.js';
 
 const profileSchema = z.object({ displayName: z.string().nullable().optional() });
 const preferencesSchema = z.object({

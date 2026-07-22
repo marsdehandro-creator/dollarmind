@@ -2,10 +2,10 @@
  * SQLite-backed GoalRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { Goal } from '../../models/index.js';
-import type { GoalRepository } from '../GoalRepository.js';
-import { nowIso } from '../../utils/id.js';
-import { rowToGoal, type Row } from './rowMappers.js';
+import type { Goal } from '@dollarmind/core/models/index.js';
+import type { GoalRepository } from '@dollarmind/core/repositories/GoalRepository.js';
+import { nowIso } from '@dollarmind/core/utils/id.js';
+import { rowToGoal, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteGoalRepository implements GoalRepository {
   constructor(private readonly db: Db) {}

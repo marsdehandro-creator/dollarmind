@@ -5,7 +5,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 import { categoryRepository, transactionCategorizationService } from '../services/index.js';
-import { ValidationError } from '../utils/errors.js';
+import { ValidationError } from '@dollarmind/core/utils/errors.js';
 
 export async function listCategories(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {

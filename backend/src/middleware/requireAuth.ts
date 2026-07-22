@@ -6,7 +6,7 @@
  */
 import type { NextFunction, Request, Response } from 'express';
 import { authService } from '../services/index.js';
-import { UnauthorizedError } from '../utils/errors.js';
+import { UnauthorizedError } from '@dollarmind/core/utils/errors.js';
 
 export function requireAuth(req: Request, _res: Response, next: NextFunction): void {
   const header = req.headers.authorization ?? '';

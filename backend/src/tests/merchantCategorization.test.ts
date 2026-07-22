@@ -6,15 +6,17 @@ import { createConfiguredDb, type Db } from '../db/index.js';
 import { SqliteMerchantRuleRepository } from '../repositories/sqlite/SqliteMerchantRuleRepository.js';
 import { SqliteCategoryRepository } from '../repositories/sqlite/SqliteCategoryRepository.js';
 import { SqliteCategoryRuleRepository } from '../repositories/sqlite/SqliteCategoryRuleRepository.js';
-import { MerchantDetectionService } from '../services/MerchantDetectionService.js';
-import { MerchantCategorizationService, fallbackCategorization } from '../services/MerchantCategorizationService.js';
-import { AdaptiveLearningService } from '../services/AdaptiveLearningService.js';
-import { LocalCategorizationService } from '../services/LocalCategorizationService.js';
-import { DEFAULT_TENANT_ID } from '../config/index.js';
-import type { Transaction } from '../models/index.js';
-import { newId } from '../utils/id.js';
+import { MerchantDetectionService } from '@dollarmind/core/services/MerchantDetectionService.js';
+import { MerchantCategorizationService, fallbackCategorization } from '@dollarmind/core/services/MerchantCategorizationService.js';
+import { AdaptiveLearningService } from '@dollarmind/core/services/AdaptiveLearningService.js';
+import { LocalCategorizationService } from '@dollarmind/core/services/LocalCategorizationService.js';
+import { DEFAULT_TENANT_ID, loadMerchantRules } from '../config/index.js';
+import type { Transaction } from '@dollarmind/core/models/index.js';
+import type { MerchantRulesConfig } from '@dollarmind/core/services/MerchantDetectionService.js';
+import { newId } from '@dollarmind/core/utils/id.js';
 
-const detection = new MerchantDetectionService();
+const merchantRulesConfig = loadMerchantRules<MerchantRulesConfig>();
+const detection = new MerchantDetectionService(merchantRulesConfig);
 
 function txn(desc: string, amount = 10000): Transaction {
   return {
@@ -58,7 +60,7 @@ describe('MerchantCategorizationService', () => {
     const merchantRules = new SqliteMerchantRuleRepository(db);
     const cats = new SqliteCategoryRepository(db);
     const rules = new SqliteCategoryRuleRepository(db);
-    svc = new MerchantCategorizationService(merchantRules, cats, rules, detection, new LocalCategorizationService(rules));
+    svc = new MerchantCategorizationService(merchantRules, cats, rules, detection, new LocalCategorizationService(rules, merchantRulesConfig));
     adaptive = new AdaptiveLearningService(merchantRules, detection, svc);
   });
 

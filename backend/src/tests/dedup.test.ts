@@ -2,8 +2,8 @@
  * Deduplication engine tests (pure).
  */
 import { describe, it, expect } from 'vitest';
-import { LocalDeduplicationService, descriptionSimilarity } from '../services/LocalDeduplicationService.js';
-import type { Transaction } from '../models/index.js';
+import { LocalDeduplicationService, descriptionSimilarity } from '@dollarmind/core/services/LocalDeduplicationService.js';
+import type { Transaction } from '@dollarmind/core/models/index.js';
 
 const dedup = new LocalDeduplicationService();
 

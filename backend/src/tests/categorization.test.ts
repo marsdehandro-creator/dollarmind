@@ -10,15 +10,18 @@ import { SqliteAuditRepository } from '../repositories/sqlite/SqliteAuditReposit
 import { SqliteAccountRepository } from '../repositories/sqlite/SqliteAccountRepository.js';
 import { SqliteDocumentRepository } from '../repositories/sqlite/SqliteDocumentRepository.js';
 import { SqliteMerchantRuleRepository } from '../repositories/sqlite/SqliteMerchantRuleRepository.js';
-import { LocalAuditService } from '../services/LocalAuditService.js';
-import { LocalCategorizationService } from '../services/LocalCategorizationService.js';
-import { MerchantDetectionService } from '../services/MerchantDetectionService.js';
-import { MerchantCategorizationService } from '../services/MerchantCategorizationService.js';
-import { AdaptiveLearningService } from '../services/AdaptiveLearningService.js';
-import { LocalTransactionCategorizationService } from '../services/LocalTransactionCategorizationService.js';
-import { DEFAULT_TENANT_ID } from '../config/index.js';
-import type { Document, Transaction } from '../models/index.js';
-import { newId, nowIso } from '../utils/id.js';
+import { LocalAuditService } from '@dollarmind/core/services/LocalAuditService.js';
+import { LocalCategorizationService } from '@dollarmind/core/services/LocalCategorizationService.js';
+import { MerchantDetectionService } from '@dollarmind/core/services/MerchantDetectionService.js';
+import { MerchantCategorizationService } from '@dollarmind/core/services/MerchantCategorizationService.js';
+import { AdaptiveLearningService } from '@dollarmind/core/services/AdaptiveLearningService.js';
+import { LocalTransactionCategorizationService } from '@dollarmind/core/services/LocalTransactionCategorizationService.js';
+import { DEFAULT_TENANT_ID, loadMerchantRules } from '../config/index.js';
+import type { Document, Transaction } from '@dollarmind/core/models/index.js';
+import type { MerchantRulesConfig } from '@dollarmind/core/services/MerchantDetectionService.js';
+import { newId, nowIso } from '@dollarmind/core/utils/id.js';
+
+const merchantRulesConfig = loadMerchantRules<MerchantRulesConfig>();
 
 let accountId = '';
 let documentId = '';
@@ -41,6 +44,7 @@ async function setupFixtures(db: Db): Promise<void> {
     parseMeta: null,
     uploadedAt: nowIso(),
     archivedAt: null,
+    blobData: null,
   };
   await new SqliteDocumentRepository(db).create(doc);
 }
@@ -81,9 +85,9 @@ function makeServices(db: Db) {
   const txns = new SqliteTransactionRepository(db);
   const cats = new SqliteCategoryRepository(db);
   const rules = new SqliteCategoryRuleRepository(db);
-  const categorizer = new LocalCategorizationService(rules);
+  const categorizer = new LocalCategorizationService(rules, merchantRulesConfig);
   const merchantRules = new SqliteMerchantRuleRepository(db);
-  const detection = new MerchantDetectionService();
+  const detection = new MerchantDetectionService(merchantRulesConfig);
   const merchantCat = new MerchantCategorizationService(merchantRules, cats, rules, detection, categorizer);
   const adaptive = new AdaptiveLearningService(merchantRules, detection, merchantCat);
   const orchestrator = new LocalTransactionCategorizationService(

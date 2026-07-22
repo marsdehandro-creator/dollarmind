@@ -2,9 +2,9 @@
  * SQLite-backed CategoryRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { Category } from '../../models/index.js';
-import type { CategoryRepository } from '../CategoryRepository.js';
-import { rowToCategory, type Row } from './rowMappers.js';
+import type { Category } from '@dollarmind/core/models/index.js';
+import type { CategoryRepository } from '@dollarmind/core/repositories/CategoryRepository.js';
+import { rowToCategory, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteCategoryRepository implements CategoryRepository {
   constructor(private readonly db: Db) {}

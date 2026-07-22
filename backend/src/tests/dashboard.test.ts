@@ -11,11 +11,11 @@ import { SqliteIssueRepository } from '../repositories/sqlite/SqliteIssueReposit
 import { SqliteSalarySlipRepository } from '../repositories/sqlite/SqliteSalarySlipRepository.js';
 import { SqliteAccountRepository } from '../repositories/sqlite/SqliteAccountRepository.js';
 import { SqliteDocumentRepository } from '../repositories/sqlite/SqliteDocumentRepository.js';
-import { LocalSpendingSummaryService } from '../services/LocalSpendingSummaryService.js';
-import { LocalDashboardService } from '../services/LocalDashboardService.js';
+import { LocalSpendingSummaryService } from '@dollarmind/core/services/LocalSpendingSummaryService.js';
+import { LocalDashboardService } from '@dollarmind/core/services/LocalDashboardService.js';
 import { DEFAULT_TENANT_ID } from '../config/index.js';
-import type { Transaction } from '../models/index.js';
-import { newId, nowIso } from '../utils/id.js';
+import type { Transaction } from '@dollarmind/core/models/index.js';
+import { newId, nowIso } from '@dollarmind/core/utils/id.js';
 
 const today = new Date();
 const thisMonth = today.toISOString().slice(0, 7);
@@ -31,7 +31,7 @@ async function fixtures(db: Db) {
   await new SqliteDocumentRepository(db).create({
     id: documentId, tenantId: DEFAULT_TENANT_ID, accountId, docType: 'bank_statement',
     filePath: '/tmp/x.csv', fileHash: newId(), mimeType: 'text/csv', byteSize: 1,
-    parserId: null, parseStatus: 'ok', parseMeta: null, uploadedAt: nowIso(), archivedAt: null,
+    parserId: null, parseStatus: 'ok', parseMeta: null, uploadedAt: nowIso(), archivedAt: null, blobData: null,
   });
 }
 

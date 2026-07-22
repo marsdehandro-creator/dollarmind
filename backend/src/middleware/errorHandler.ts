@@ -4,9 +4,9 @@
  * Never leaks internal error detail to the client.
  */
 import type { NextFunction, Request, Response } from 'express';
-import { HttpError } from '../utils/errors.js';
-import { IngestError } from '../utils/ingestErrors.js';
-import { logger } from '../utils/logger.js';
+import { HttpError } from '@dollarmind/core/utils/errors.js';
+import { IngestError } from '@dollarmind/core/utils/ingestErrors.js';
+import { logger } from '@dollarmind/core/utils/logger.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction): void {

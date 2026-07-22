@@ -4,7 +4,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 import { transactionService } from '../services/index.js';
-import type { TransactionFilterCriteria } from '../repositories/TransactionRepository.js';
+import type { TransactionFilterCriteria } from '@dollarmind/core/repositories/TransactionRepository.js';
 
 export async function listTransactions(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {

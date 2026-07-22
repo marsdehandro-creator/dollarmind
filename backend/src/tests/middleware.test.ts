@@ -7,19 +7,23 @@ import type { NextFunction, Request, Response } from 'express';
 import { requireAuth } from '../middleware/requireAuth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { logout } from '../controllers/authController.js';
-import { signToken } from '../utils/jwt.js';
-import { HttpError } from '../utils/errors.js';
+import { signToken } from '@dollarmind/core/utils/jwt.js';
+import { HttpError } from '@dollarmind/core/utils/errors.js';
 import { auditRepository } from '../services/index.js';
-import { DEFAULT_TENANT_ID } from '../config/index.js';
-import type { AuthTokenPayload } from '../services/interfaces/AuthService.js';
+import { DEFAULT_TENANT_ID, env } from '../config/index.js';
+import type { AuthTokenPayload } from '@dollarmind/core/services/interfaces/AuthService.js';
 
 function tokenFor(roles: AuthTokenPayload['roles']): string {
-  return signToken({
-    sub: 'user-1',
-    tenantId: 'tenant-1',
-    email: 'u@example.com',
-    roles,
-  });
+  return signToken(
+    {
+      sub: 'user-1',
+      tenantId: 'tenant-1',
+      email: 'u@example.com',
+      roles,
+    },
+    env.JWT_SECRET,
+    env.JWT_EXPIRES_IN,
+  );
 }
 
 function mockRes(): Response {

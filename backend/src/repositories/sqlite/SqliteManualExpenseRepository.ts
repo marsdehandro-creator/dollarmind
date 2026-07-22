@@ -2,11 +2,11 @@
  * SQLite-backed ManualExpenseRepository. All amounts are expenses.
  */
 import type { Db } from '../../db/connection.js';
-import type { ManualExpense } from '../../models/index.js';
-import type { DateRange, ManualExpenseRepository } from '../ManualExpenseRepository.js';
-import type { CategoryAggregate, MonthCategoryTotal, MonthTotal } from '../TransactionRepository.js';
-import { nowIso } from '../../utils/id.js';
-import { rowToManualExpense, type Row } from './rowMappers.js';
+import type { ManualExpense } from '@dollarmind/core/models/index.js';
+import type { DateRange, ManualExpenseRepository } from '@dollarmind/core/repositories/ManualExpenseRepository.js';
+import type { CategoryAggregate, MonthCategoryTotal, MonthTotal } from '@dollarmind/core/repositories/TransactionRepository.js';
+import { nowIso } from '@dollarmind/core/utils/id.js';
+import { rowToManualExpense, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteManualExpenseRepository implements ManualExpenseRepository {
   constructor(private readonly db: Db) {}

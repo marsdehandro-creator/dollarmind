@@ -33,4 +33,4 @@ export const env: Env = {
 };
 
 /** Single-tenant pilot: every user belongs to this tenant (docs/data-model.md §1). */
-export const DEFAULT_TENANT_ID = '00000000-0000-0000-0000-000000000001';
+export { DEFAULT_TENANT_ID } from '@dollarmind/core/constants.js';

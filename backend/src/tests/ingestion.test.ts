@@ -2,10 +2,13 @@
  * Ingestion extraction layer + business error mapping.
  */
 import { describe, it, expect } from 'vitest';
-import { extractDocumentText } from '../ingestion/extract.js';
-import { NullOcrProvider } from '../ingestion/ocr.js';
-import { IngestError, INGEST_ERRORS } from '../utils/ingestErrors.js';
-import { detectBank } from '../ingestion/formatDetect.js';
+import { extractDocumentText, type ExtractionAdapters } from '@dollarmind/core/ingestion/extract.js';
+import { NullOcrProvider, getOcrProvider } from '@dollarmind/core/ingestion/ocr.js';
+import { extractPdf } from '@dollarmind/core/ingestion/pdf.js';
+import { IngestError, INGEST_ERRORS } from '@dollarmind/core/utils/ingestErrors.js';
+import { detectBank } from '@dollarmind/core/ingestion/formatDetect.js';
+
+const realAdapters: ExtractionAdapters = { ocr: getOcrProvider(), extractPdf };
 
 describe('business error registry', () => {
   it('maps codes to the documented HTTP statuses', () => {
@@ -23,7 +26,7 @@ describe('business error registry', () => {
 describe('extractDocumentText', () => {
   it('decodes text/CSV directly', async () => {
     const buffer = Buffer.from('a,b,c\n1,2,3', 'utf-8');
-    const r = await extractDocumentText({ bytes: buffer, fileName: 'x.csv', mimeType: 'text/csv' });
+    const r = await extractDocumentText({ bytes: buffer, fileName: 'x.csv', mimeType: 'text/csv' }, undefined, realAdapters);
     expect(r.source).toBe('text');
     expect(r.text).toContain('a,b,c');
   });
@@ -31,21 +34,25 @@ describe('extractDocumentText', () => {
   it('invokes pdf-parse and maps a corrupt PDF to EXTRACTION_FAILED (500)', async () => {
     const bad = Buffer.from('%PDF-1.4 not really a pdf', 'latin1');
     await expect(
-      extractDocumentText({ bytes: bad, fileName: 'slip.pdf', mimeType: 'application/pdf' }),
+      extractDocumentText({ bytes: bad, fileName: 'slip.pdf', mimeType: 'application/pdf' }, undefined, realAdapters),
     ).rejects.toMatchObject({ code: 'EXTRACTION_FAILED', status: 500 });
   });
 
   it('returns OCR_UNAVAILABLE (503) for an image with no OCR provider', async () => {
     const png = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
     await expect(
-      extractDocumentText({ bytes: png, fileName: 'scan.png', mimeType: 'image/png' }, undefined, new NullOcrProvider()),
+      extractDocumentText(
+        { bytes: png, fileName: 'scan.png', mimeType: 'image/png' },
+        undefined,
+        { ocr: new NullOcrProvider(), extractPdf },
+      ),
     ).rejects.toMatchObject({ code: 'OCR_UNAVAILABLE', status: 503 });
   });
 
   it('returns FORMAT_UNRECOGNIZED (400) for unsupported types', async () => {
     const bin = Buffer.from([0x50, 0x4b, 0x03, 0x04]); // zip
     await expect(
-      extractDocumentText({ bytes: bin, fileName: 'data.zip', mimeType: 'application/zip' }),
+      extractDocumentText({ bytes: bin, fileName: 'data.zip', mimeType: 'application/zip' }, undefined, realAdapters),
     ).rejects.toMatchObject({ code: 'FORMAT_UNRECOGNIZED', status: 400 });
   });
 });

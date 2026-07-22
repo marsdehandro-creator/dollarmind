@@ -1,7 +1,7 @@
 /**
- * Goals API client.
+ * Goals local data access. Calls the on-device goalService directly.
  */
-import { apiGet, apiPost, apiRequest } from './apiClient.js';
+import { getContainer } from '../local/container.js';
 
 export type GoalType = 'house' | 'car' | 'vacation' | 'emergency' | 'custom';
 
@@ -48,20 +48,25 @@ export interface CreateGoalInput {
 }
 
 export async function listGoals(): Promise<GoalWithProgress[]> {
-  const { goals } = await apiGet<{ goals: GoalWithProgress[] }>('/goals');
-  return goals;
+  const { goalService, tenantId } = await getContainer();
+  const goals = await goalService.list(tenantId);
+  return goals as unknown as GoalWithProgress[];
 }
 
 export async function createGoal(input: CreateGoalInput): Promise<GoalWithProgress> {
-  const { goal } = await apiPost<{ goal: GoalWithProgress }>('/goals', input);
-  return goal;
+  const { goalService, tenantId } = await getContainer();
+  const goal = await goalService.create(tenantId, input);
+  return goal as unknown as GoalWithProgress;
 }
 
 export async function updateGoal(id: string, patch: Partial<CreateGoalInput> & { status?: string }): Promise<GoalWithProgress> {
-  const { goal } = await apiRequest<{ goal: GoalWithProgress }>('PUT', `/goals/${id}`, patch);
-  return goal;
+  const { goalService, tenantId } = await getContainer();
+  const goal = await goalService.update(tenantId, id, patch as Parameters<typeof goalService.update>[2]);
+  return goal as unknown as GoalWithProgress;
 }
 
-export function deleteGoal(id: string): Promise<{ ok: boolean }> {
-  return apiRequest<{ ok: boolean }>('DELETE', `/goals/${id}`);
+export async function deleteGoal(id: string): Promise<{ ok: boolean }> {
+  const { goalService, tenantId } = await getContainer();
+  await goalService.delete(tenantId, id);
+  return { ok: true };
 }

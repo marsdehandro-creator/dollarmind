@@ -3,16 +3,16 @@
  * key failure paths, using fresh in-memory repositories per test for isolation.
  */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { LocalAuthService } from '../services/LocalAuthService.js';
-import { LocalAuditService } from '../services/LocalAuditService.js';
-import { InMemoryUserRepository } from '../repositories/memory/InMemoryUserRepository.js';
-import { InMemoryAuditRepository } from '../repositories/memory/InMemoryAuditRepository.js';
-import { hashPassword, verifyPassword } from '../utils/password.js';
+import { LocalAuthService } from '@dollarmind/core/services/LocalAuthService.js';
+import { LocalAuditService } from '@dollarmind/core/services/LocalAuditService.js';
+import { InMemoryUserRepository } from '@dollarmind/core/repositories/memory/InMemoryUserRepository.js';
+import { InMemoryAuditRepository } from '@dollarmind/core/repositories/memory/InMemoryAuditRepository.js';
+import { hashPassword, verifyPassword } from '@dollarmind/core/utils/password.js';
 
 function makeService() {
   const users = new InMemoryUserRepository();
   const audit = new InMemoryAuditRepository();
-  const service = new LocalAuthService(users, new LocalAuditService(audit));
+  const service = new LocalAuthService(users, new LocalAuditService(audit), 'test-jwt-secret', 3600);
   return { service, users, audit };
 }
 

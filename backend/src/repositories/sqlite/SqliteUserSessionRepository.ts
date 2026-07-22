@@ -2,10 +2,10 @@
  * SQLite-backed UserSessionRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { UserSession } from '../../models/index.js';
-import type { UserSessionRepository } from '../UserSessionRepository.js';
-import { nowIso } from '../../utils/id.js';
-import { rowToUserSession, type Row } from './rowMappers.js';
+import type { UserSession } from '@dollarmind/core/models/index.js';
+import type { UserSessionRepository } from '@dollarmind/core/repositories/UserSessionRepository.js';
+import { nowIso } from '@dollarmind/core/utils/id.js';
+import { rowToUserSession, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteUserSessionRepository implements UserSessionRepository {
   constructor(private readonly db: Db) {}

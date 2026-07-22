@@ -2,9 +2,9 @@
  * SQLite-backed SalaryComponentRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { SalaryComponent } from '../../models/index.js';
-import type { SalaryComponentRepository } from '../SalaryComponentRepository.js';
-import { rowToSalaryComponent, type Row } from './rowMappers.js';
+import type { SalaryComponent } from '@dollarmind/core/models/index.js';
+import type { SalaryComponentRepository } from '@dollarmind/core/repositories/SalaryComponentRepository.js';
+import { rowToSalaryComponent, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteSalaryComponentRepository implements SalaryComponentRepository {
   constructor(private readonly db: Db) {}

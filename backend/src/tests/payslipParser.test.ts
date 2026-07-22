@@ -3,7 +3,7 @@
  * and components using an inline rule set.
  */
 import { describe, it, expect } from 'vitest';
-import { extractAmount, parsePayslipText, type SalaryParserRules } from '../parsers/payslip/payslipParser.js';
+import { extractAmount, parsePayslipText, type SalaryParserRules } from '@dollarmind/core/parsers/payslip/payslipParser.js';
 
 const rules: SalaryParserRules = {
   fields: {

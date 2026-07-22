@@ -23,27 +23,35 @@ import { SqliteCashEntryRepository } from '../repositories/sqlite/SqliteCashEntr
 import { SqliteUserSettingsRepository } from '../repositories/sqlite/SqliteUserSettingsRepository.js';
 import { SqliteUserSessionRepository } from '../repositories/sqlite/SqliteUserSessionRepository.js';
 import { SqliteGoalRepository } from '../repositories/sqlite/SqliteGoalRepository.js';
-import { LocalAuditService } from './LocalAuditService.js';
-import { LocalAuthService } from './LocalAuthService.js';
-import { LocalSalarySlipService } from './LocalSalarySlipService.js';
-import { LocalDeduplicationService } from './LocalDeduplicationService.js';
-import { LocalStatementImportService } from './LocalStatementImportService.js';
-import { LocalTransactionService } from './LocalTransactionService.js';
-import { LocalCategorizationService } from './LocalCategorizationService.js';
-import { MerchantDetectionService } from './MerchantDetectionService.js';
-import { MerchantCategorizationService } from './MerchantCategorizationService.js';
-import { AdaptiveLearningService } from './AdaptiveLearningService.js';
-import { LocalTransactionCategorizationService } from './LocalTransactionCategorizationService.js';
-import { LocalSpendingSummaryService } from './LocalSpendingSummaryService.js';
-import { LocalManualExpenseService } from './LocalManualExpenseService.js';
-import { LocalCashEntryService } from './LocalCashEntryService.js';
-import { LocalUserSettingsService } from './LocalUserSettingsService.js';
-import { LocalSecurityService } from './LocalSecurityService.js';
-import { LocalGoalService } from './LocalGoalService.js';
-import { LocalDashboardService } from './LocalDashboardService.js';
-import { LocalDashboardAggregationService } from './LocalDashboardAggregationService.js';
+import { LocalAuditService } from '@dollarmind/core/services/LocalAuditService.js';
+import { LocalAuthService } from '@dollarmind/core/services/LocalAuthService.js';
+import { LocalSalarySlipService } from '@dollarmind/core/services/LocalSalarySlipService.js';
+import { LocalDeduplicationService } from '@dollarmind/core/services/LocalDeduplicationService.js';
+import { LocalStatementImportService } from '@dollarmind/core/services/LocalStatementImportService.js';
+import { LocalTransactionService } from '@dollarmind/core/services/LocalTransactionService.js';
+import { LocalCategorizationService } from '@dollarmind/core/services/LocalCategorizationService.js';
+import { MerchantDetectionService, type MerchantRulesConfig } from '@dollarmind/core/services/MerchantDetectionService.js';
+import { MerchantCategorizationService } from '@dollarmind/core/services/MerchantCategorizationService.js';
+import { AdaptiveLearningService } from '@dollarmind/core/services/AdaptiveLearningService.js';
+import { LocalTransactionCategorizationService } from '@dollarmind/core/services/LocalTransactionCategorizationService.js';
+import { LocalSpendingSummaryService } from '@dollarmind/core/services/LocalSpendingSummaryService.js';
+import { LocalManualExpenseService } from '@dollarmind/core/services/LocalManualExpenseService.js';
+import { LocalCashEntryService } from '@dollarmind/core/services/LocalCashEntryService.js';
+import { LocalUserSettingsService } from '@dollarmind/core/services/LocalUserSettingsService.js';
+import { LocalSecurityService } from '@dollarmind/core/services/LocalSecurityService.js';
+import { LocalGoalService } from '@dollarmind/core/services/LocalGoalService.js';
+import { LocalDashboardService } from '@dollarmind/core/services/LocalDashboardService.js';
+import { LocalDashboardAggregationService } from '@dollarmind/core/services/LocalDashboardAggregationService.js';
+import { NodeFileStore } from './NodeFileStore.js';
+import { extractPdf } from '@dollarmind/core/ingestion/pdf.js';
+import { getOcrProvider } from '@dollarmind/core/ingestion/ocr.js';
+import type { ExtractionAdapters } from '@dollarmind/core/ingestion/extract.js';
+import { env, loadMerchantRules, loadSalaryParserRules, loadStatementParserRules } from '../config/index.js';
+import type { SalaryParserRules } from '@dollarmind/core/parsers/payslip/payslipParser.js';
+import type { StatementParserRules } from '@dollarmind/core/parsers/bank/statementParser.js';
 
 const db = getDb();
+const extractionAdapters: ExtractionAdapters = { ocr: getOcrProvider(), extractPdf };
 
 // Repositories (concrete, SQLite-backed).
 export const userRepository = new SqliteUserRepository(db);
@@ -66,19 +74,26 @@ export const goalRepository = new SqliteGoalRepository(db);
 
 // Services.
 export const auditService = new LocalAuditService(auditRepository);
-export const authService = new LocalAuthService(userRepository, auditService);
-export const salarySlipService = new LocalSalarySlipService({
-  accounts: accountRepository,
-  documents: documentRepository,
-  slips: salarySlipRepository,
-  components: salaryComponentRepository,
-  issues: issueRepository,
-  audit: auditService,
-});
+export const authService = new LocalAuthService(userRepository, auditService, env.JWT_SECRET, env.JWT_EXPIRES_IN);
+export const salarySlipService = new LocalSalarySlipService(
+  {
+    accounts: accountRepository,
+    documents: documentRepository,
+    slips: salarySlipRepository,
+    components: salaryComponentRepository,
+    issues: issueRepository,
+    audit: auditService,
+  },
+  loadSalaryParserRules<SalaryParserRules>(),
+  new NodeFileStore('salary-slips'),
+  extractionAdapters,
+);
+
+const merchantRulesConfig = loadMerchantRules<MerchantRulesConfig>();
 
 export const deduplicationService = new LocalDeduplicationService();
-export const categorizationService = new LocalCategorizationService(categoryRuleRepository);
-export const merchantDetectionService = new MerchantDetectionService();
+export const categorizationService = new LocalCategorizationService(categoryRuleRepository, merchantRulesConfig);
+export const merchantDetectionService = new MerchantDetectionService(merchantRulesConfig);
 export const merchantCategorizationService = new MerchantCategorizationService(
   merchantRuleRepository,
   categoryRepository,
@@ -91,16 +106,21 @@ export const adaptiveLearningService = new AdaptiveLearningService(
   merchantDetectionService,
   merchantCategorizationService,
 );
-export const statementImportService = new LocalStatementImportService({
-  accounts: accountRepository,
-  documents: documentRepository,
-  statements: bankStatementRepository,
-  transactions: transactionRepository,
-  issues: issueRepository,
-  merchantCategorizer: merchantCategorizationService,
-  dedup: deduplicationService,
-  audit: auditService,
-});
+export const statementImportService = new LocalStatementImportService(
+  {
+    accounts: accountRepository,
+    documents: documentRepository,
+    statements: bankStatementRepository,
+    transactions: transactionRepository,
+    issues: issueRepository,
+    merchantCategorizer: merchantCategorizationService,
+    dedup: deduplicationService,
+    audit: auditService,
+  },
+  loadStatementParserRules<StatementParserRules>(),
+  new NodeFileStore('statements'),
+  extractionAdapters,
+);
 export const transactionService = new LocalTransactionService(transactionRepository);
 
 export const transactionCategorizationService = new LocalTransactionCategorizationService(
@@ -120,10 +140,16 @@ export const spendingSummaryService = new LocalSpendingSummaryService(
   cashEntryRepository,
 );
 
-export type { AuthService } from './interfaces/AuthService.js';
-export type { AuditService } from './interfaces/AuditService.js';
-export type { SalarySlipService } from './interfaces/SalarySlipService.js';
-export const securityService = new LocalSecurityService(userSessionRepository, userRepository, auditService);
+export type { AuthService } from '@dollarmind/core/services/interfaces/AuthService.js';
+export type { AuditService } from '@dollarmind/core/services/interfaces/AuditService.js';
+export type { SalarySlipService } from '@dollarmind/core/services/interfaces/SalarySlipService.js';
+export const securityService = new LocalSecurityService(
+  userSessionRepository,
+  userRepository,
+  auditService,
+  env.JWT_SECRET,
+  env.JWT_EXPIRES_IN,
+);
 export const userSettingsService = new LocalUserSettingsService(
   userSettingsRepository,
   userRepository,
@@ -149,9 +175,9 @@ export const dashboardAggregationService = new LocalDashboardAggregationService(
   cashEntryRepository,
 );
 
-export type { StatementImportService } from './interfaces/StatementImportService.js';
-export type { TransactionService } from './interfaces/TransactionService.js';
-export type { UserSettingsService } from './interfaces/UserSettingsService.js';
-export type { SecurityService } from './interfaces/SecurityService.js';
-export type { GoalService } from './interfaces/GoalService.js';
-export type { DashboardService } from './interfaces/DashboardService.js';
+export type { StatementImportService } from '@dollarmind/core/services/interfaces/StatementImportService.js';
+export type { TransactionService } from '@dollarmind/core/services/interfaces/TransactionService.js';
+export type { UserSettingsService } from '@dollarmind/core/services/interfaces/UserSettingsService.js';
+export type { SecurityService } from '@dollarmind/core/services/interfaces/SecurityService.js';
+export type { GoalService } from '@dollarmind/core/services/interfaces/GoalService.js';
+export type { DashboardService } from '@dollarmind/core/services/interfaces/DashboardService.js';

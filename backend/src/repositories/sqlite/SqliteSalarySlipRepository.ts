@@ -2,9 +2,9 @@
  * SQLite-backed SalarySlipRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { SalarySlip } from '../../models/index.js';
-import type { SalarySlipRepository } from '../SalarySlipRepository.js';
-import { rowToSalarySlip, type Row } from './rowMappers.js';
+import type { SalarySlip } from '@dollarmind/core/models/index.js';
+import type { SalarySlipRepository } from '@dollarmind/core/repositories/SalarySlipRepository.js';
+import { rowToSalarySlip, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteSalarySlipRepository implements SalarySlipRepository {
   constructor(private readonly db: Db) {}

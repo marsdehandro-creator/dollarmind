@@ -29,3 +29,8 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Copied at dev/build time by frontend/scripts/copy-assets.mjs (see predev/prebuild)
+frontend/public/assets/sql-wasm.wasm
+frontend/public/assets/sql-wasm-browser.wasm
+frontend/public/assets/tesseract/

@@ -2,9 +2,9 @@
  * SQLite-backed IssueRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { IssueLog } from '../../models/index.js';
-import type { IssueRepository } from '../IssueRepository.js';
-import { rowToIssue, type Row } from './rowMappers.js';
+import type { IssueLog } from '@dollarmind/core/models/index.js';
+import type { IssueRepository } from '@dollarmind/core/repositories/IssueRepository.js';
+import { rowToIssue, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteIssueRepository implements IssueRepository {
   constructor(private readonly db: Db) {}

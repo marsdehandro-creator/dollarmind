@@ -3,8 +3,8 @@
  * coercion, bank detection, and business errors.
  */
 import { describe, it, expect } from 'vitest';
-import { parseStatementText, toIsoDate, type StatementParserRules } from '../parsers/bank/statementParser.js';
-import { IngestError } from '../utils/ingestErrors.js';
+import { parseStatementText, toIsoDate, type StatementParserRules } from '@dollarmind/core/parsers/bank/statementParser.js';
+import { IngestError } from '@dollarmind/core/utils/ingestErrors.js';
 
 const rules: StatementParserRules = {
   csv: {

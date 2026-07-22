@@ -2,9 +2,9 @@
  * SQLite-backed MerchantRuleRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { MerchantRule } from '../../models/index.js';
-import type { MerchantRuleRepository } from '../MerchantRuleRepository.js';
-import { rowToMerchantRule, type Row } from './rowMappers.js';
+import type { MerchantRule } from '@dollarmind/core/models/index.js';
+import type { MerchantRuleRepository } from '@dollarmind/core/repositories/MerchantRuleRepository.js';
+import { rowToMerchantRule, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteMerchantRuleRepository implements MerchantRuleRepository {
   constructor(private readonly db: Db) {}

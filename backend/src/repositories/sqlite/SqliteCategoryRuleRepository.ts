@@ -2,10 +2,10 @@
  * SQLite-backed CategoryRuleRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { CategoryRule } from '../../models/index.js';
-import type { CategoryRuleRepository } from '../CategoryRuleRepository.js';
-import { nowIso } from '../../utils/id.js';
-import { rowToCategoryRule, type Row } from './rowMappers.js';
+import type { CategoryRule } from '@dollarmind/core/models/index.js';
+import type { CategoryRuleRepository } from '@dollarmind/core/repositories/CategoryRuleRepository.js';
+import { nowIso } from '@dollarmind/core/utils/id.js';
+import { rowToCategoryRule, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteCategoryRuleRepository implements CategoryRuleRepository {
   constructor(private readonly db: Db) {}

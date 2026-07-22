@@ -2,9 +2,9 @@
  * SQLite-backed UserSettingsRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { UserSettings } from '../../models/index.js';
-import type { UserSettingsRepository } from '../UserSettingsRepository.js';
-import { rowToUserSettings, type Row } from './rowMappers.js';
+import type { UserSettings } from '@dollarmind/core/models/index.js';
+import type { UserSettingsRepository } from '@dollarmind/core/repositories/UserSettingsRepository.js';
+import { rowToUserSettings, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteUserSettingsRepository implements UserSettingsRepository {
   constructor(private readonly db: Db) {}

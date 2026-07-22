@@ -2,7 +2,7 @@
  * Dynamic section-aware payslip parsing (Phase 17).
  */
 import { describe, it, expect } from 'vitest';
-import { parsePayslipText, type SalaryParserRules } from '../parsers/payslip/payslipParser.js';
+import { parsePayslipText, type SalaryParserRules } from '@dollarmind/core/parsers/payslip/payslipParser.js';
 
 const rules: SalaryParserRules = {
   fields: { gross: ['gross pay', 'gross'], net: ['net pay', 'net'] },

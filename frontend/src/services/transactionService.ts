@@ -1,7 +1,8 @@
 /**
- * Transaction API client.
+ * Transaction local data access. Calls the on-device transactionService
+ * directly.
  */
-import { apiGet, apiPost } from './apiClient.js';
+import { getContainer } from '../local/container.js';
 
 export interface TransactionDto {
   id: string;
@@ -28,11 +29,13 @@ export interface TransactionFilterCriteria {
 }
 
 export async function listTransactions(): Promise<TransactionDto[]> {
-  const { transactions } = await apiGet<{ transactions: TransactionDto[] }>('/transactions/list');
-  return transactions;
+  const { transactionService, tenantId } = await getContainer();
+  const transactions = await transactionService.list(tenantId);
+  return transactions as unknown as TransactionDto[];
 }
 
 export async function filterTransactions(criteria: TransactionFilterCriteria): Promise<TransactionDto[]> {
-  const { transactions } = await apiPost<{ transactions: TransactionDto[] }>('/transactions/filter', criteria);
-  return transactions;
+  const { transactionService, tenantId } = await getContainer();
+  const transactions = await transactionService.filter(tenantId, criteria);
+  return transactions as unknown as TransactionDto[];
 }

@@ -1,7 +1,8 @@
 /**
- * Salary slip API client. Mirrors the backend SalarySlipService responses.
+ * Salary slip local data access. Calls the on-device salarySlipService
+ * directly — same shapes the backend's SalarySlipService used to return.
  */
-import { apiGet, apiUpload } from './apiClient.js';
+import { getContainer } from '../local/container.js';
 
 export type SalaryComponentType = 'earning' | 'deduction' | 'contribution' | 'allowance' | 'tax';
 
@@ -53,12 +54,18 @@ export interface UploadResult extends SlipWithComponents {
   diagnostics?: string[];
 }
 
-export function uploadSlip(file: File): Promise<UploadResult> {
-  const form = new FormData();
-  form.append('file', file);
-  return apiUpload<UploadResult>('/salary/upload', form);
+export async function uploadSlip(file: File): Promise<UploadResult> {
+  const { salarySlipService, tenantId } = await getContainer();
+  const buffer = new Uint8Array(await file.arrayBuffer());
+  const result = await salarySlipService.uploadSlip({
+    tenantId,
+    file: { buffer, originalName: file.name, mimeType: file.type || 'application/octet-stream', size: file.size },
+  });
+  return result as unknown as UploadResult;
 }
 
-export function getHistory(): Promise<{ slips: SlipWithComponents[] }> {
-  return apiGet<{ slips: SlipWithComponents[] }>('/salary/history');
+export async function getHistory(): Promise<{ slips: SlipWithComponents[] }> {
+  const { salarySlipService, tenantId } = await getContainer();
+  const slips = await salarySlipService.getSlipHistory(tenantId);
+  return { slips: slips as unknown as SlipWithComponents[] };
 }

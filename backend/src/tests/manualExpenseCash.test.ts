@@ -9,10 +9,10 @@ import { SqliteCategoryRepository } from '../repositories/sqlite/SqliteCategoryR
 import { SqliteManualExpenseRepository } from '../repositories/sqlite/SqliteManualExpenseRepository.js';
 import { SqliteCashEntryRepository } from '../repositories/sqlite/SqliteCashEntryRepository.js';
 import { SqliteAuditRepository } from '../repositories/sqlite/SqliteAuditRepository.js';
-import { LocalAuditService } from '../services/LocalAuditService.js';
-import { LocalManualExpenseService } from '../services/LocalManualExpenseService.js';
-import { LocalCashEntryService } from '../services/LocalCashEntryService.js';
-import { LocalSpendingSummaryService } from '../services/LocalSpendingSummaryService.js';
+import { LocalAuditService } from '@dollarmind/core/services/LocalAuditService.js';
+import { LocalManualExpenseService } from '@dollarmind/core/services/LocalManualExpenseService.js';
+import { LocalCashEntryService } from '@dollarmind/core/services/LocalCashEntryService.js';
+import { LocalSpendingSummaryService } from '@dollarmind/core/services/LocalSpendingSummaryService.js';
 import { DEFAULT_TENANT_ID } from '../config/index.js';
 
 function services(db: Db) {

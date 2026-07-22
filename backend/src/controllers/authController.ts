@@ -4,8 +4,8 @@
 import type { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 import { authService, auditService, securityService } from '../services/index.js';
-import { MIN_PASSWORD_LENGTH } from '../utils/password.js';
-import { ValidationError } from '../utils/errors.js';
+import { MIN_PASSWORD_LENGTH } from '@dollarmind/core/utils/password.js';
+import { ValidationError } from '@dollarmind/core/utils/errors.js';
 
 function sessionContext(req: Request) {
   return { userAgent: req.headers['user-agent'] ?? null, ip: req.ip ?? null };

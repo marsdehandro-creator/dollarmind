@@ -9,10 +9,10 @@ import { SqliteAccountRepository } from '../repositories/sqlite/SqliteAccountRep
 import { SqliteDocumentRepository } from '../repositories/sqlite/SqliteDocumentRepository.js';
 import { SqliteManualExpenseRepository } from '../repositories/sqlite/SqliteManualExpenseRepository.js';
 import { SqliteCashEntryRepository } from '../repositories/sqlite/SqliteCashEntryRepository.js';
-import { LocalSpendingSummaryService } from '../services/LocalSpendingSummaryService.js';
+import { LocalSpendingSummaryService } from '@dollarmind/core/services/LocalSpendingSummaryService.js';
 import { DEFAULT_TENANT_ID } from '../config/index.js';
-import type { Document, Transaction } from '../models/index.js';
-import { newId, nowIso } from '../utils/id.js';
+import type { Document, Transaction } from '@dollarmind/core/models/index.js';
+import { newId, nowIso } from '@dollarmind/core/utils/id.js';
 
 let accountId = '';
 let documentId = '';
@@ -35,6 +35,7 @@ async function setupFixtures(db: Db): Promise<void> {
     parseMeta: null,
     uploadedAt: nowIso(),
     archivedAt: null,
+    blobData: null,
   };
   await new SqliteDocumentRepository(db).create(doc);
 }

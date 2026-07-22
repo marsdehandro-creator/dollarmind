@@ -1,18 +1,31 @@
 /**
- * Auth context. Holds the current user + JWT (in memory) and exposes login /
- * register / logout. The token is mirrored into the token store so the API
- * client can attach it to requests (docs/security.md §2.4).
+ * V1 offline auth context.
  *
- * NOTE (pilot): the token lives only in memory, so a full page refresh logs the
- * user out. This is deliberate — it keeps the JWT out of storage that XSS could
- * read. Persistent sessions come later via an httpOnly refresh-cookie flow.
+ * There is no server and no account system in V1 — every install is a single
+ * local user (the pilot tenant). The context auto-"authenticates" on mount so
+ * routing/pages built around isAuthenticated keep working unchanged. A real
+ * gate (PIN lock) replaces this open-by-default state in a later phase
+ * (docs/v1-offline-product-spec.md) without needing to touch this shape again.
  */
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
-import * as authApi from '../services/authService.js';
-import { setToken } from '../services/tokenStore.js';
+import { DEFAULT_TENANT_ID } from '@dollarmind/core/constants.js';
+
+export interface LocalUser {
+  id: string;
+  tenantId: string;
+  email: string;
+  roles: string[];
+}
+
+const LOCAL_USER: LocalUser = {
+  id: DEFAULT_TENANT_ID,
+  tenantId: DEFAULT_TENANT_ID,
+  email: 'you@device.local',
+  roles: ['user'],
+};
 
 interface AuthState {
-  user: authApi.PublicUser | null;
+  user: LocalUser | null;
   sessionId: string | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -23,31 +36,20 @@ interface AuthState {
 const AuthContext = createContext<AuthState | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<authApi.PublicUser | null>(null);
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [user, setUser] = useState<LocalUser | null>(LOCAL_USER);
 
-  const value = useMemo<AuthState>(() => {
-    async function apply(result: authApi.AuthResult): Promise<void> {
-      setToken(result.token);
-      setUser(result.user);
-      setSessionId(result.sessionId ?? null);
-    }
-    return {
+  const value = useMemo<AuthState>(
+    () => ({
       user,
-      sessionId,
+      sessionId: null,
       isAuthenticated: user !== null,
-      login: async (email, password) => apply(await authApi.login({ email, password })),
-      register: async (email, password) => apply(await authApi.register({ email, password })),
-      logout: () => {
-        // Fire the server-side logout with the current token still attached,
-        // then clear local state immediately for a responsive UI.
-        void authApi.logout().catch(() => undefined);
-        setToken(null);
-        setUser(null);
-        setSessionId(null);
-      },
-    };
-  }, [user, sessionId]);
+      // No-ops: V1 has no accounts. Kept so LoginPage/routing don't need changes.
+      login: async () => setUser(LOCAL_USER),
+      register: async () => setUser(LOCAL_USER),
+      logout: () => setUser(null),
+    }),
+    [user],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

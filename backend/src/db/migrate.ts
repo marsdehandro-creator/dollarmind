@@ -9,8 +9,8 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { Db } from './connection.js';
 import { DEFAULT_TENANT_ID } from '../config/index.js';
-import { nowIso } from '../utils/id.js';
-import { logger } from '../utils/logger.js';
+import { nowIso } from '@dollarmind/core/utils/id.js';
+import { logger } from '@dollarmind/core/utils/logger.js';
 
 const MIGRATIONS_DIR =
   process.env.DOLLARMIND_MIGRATIONS_DIR ??

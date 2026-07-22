@@ -1,7 +1,8 @@
 /**
- * Spending summary + trends API client.
+ * Spending summary + trends local data access. Calls the on-device
+ * spendingSummaryService directly.
  */
-import { apiGet } from './apiClient.js';
+import { getContainer } from '../local/container.js';
 
 export interface CategorySpend {
   categoryId: string | null;
@@ -33,14 +34,14 @@ export interface SpendingTrends {
   categories: CategoryTrend[];
 }
 
-export function getSummary(from?: string, to?: string): Promise<SpendingSummary> {
-  const q = new URLSearchParams();
-  if (from) q.set('from', from);
-  if (to) q.set('to', to);
-  const qs = q.toString();
-  return apiGet<SpendingSummary>(`/transactions/summary${qs ? `?${qs}` : ''}`);
+export async function getSummary(from?: string, to?: string): Promise<SpendingSummary> {
+  const { spendingSummaryService, tenantId } = await getContainer();
+  const result = await spendingSummaryService.monthlySummary(tenantId, from, to);
+  return result as unknown as SpendingSummary;
 }
 
-export function getTrends(months = 6): Promise<SpendingTrends> {
-  return apiGet<SpendingTrends>(`/transactions/trends?months=${months}`);
+export async function getTrends(months = 6): Promise<SpendingTrends> {
+  const { spendingSummaryService, tenantId } = await getContainer();
+  const result = await spendingSummaryService.trends(tenantId, months);
+  return result as unknown as SpendingTrends;
 }

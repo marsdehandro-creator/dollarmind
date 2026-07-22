@@ -3,7 +3,7 @@
  */
 import type { NextFunction, Request, Response } from 'express';
 import { statementImportService } from '../services/index.js';
-import { ValidationError } from '../utils/errors.js';
+import { ValidationError } from '@dollarmind/core/utils/errors.js';
 
 export async function uploadStatement(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {

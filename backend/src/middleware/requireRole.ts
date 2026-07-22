@@ -5,8 +5,8 @@
  * at least one of the allowed roles; otherwise 403. Deny-by-default.
  */
 import type { NextFunction, Request, Response } from 'express';
-import type { RoleName } from '../models/index.js';
-import { ForbiddenError, UnauthorizedError } from '../utils/errors.js';
+import type { RoleName } from '@dollarmind/core/models/index.js';
+import { ForbiddenError, UnauthorizedError } from '@dollarmind/core/utils/errors.js';
 
 export function requireRole(...allowed: RoleName[]) {
   return (req: Request, _res: Response, next: NextFunction): void => {

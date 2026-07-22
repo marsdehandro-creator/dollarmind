@@ -13,14 +13,24 @@ import { SqliteAuditRepository } from '../repositories/sqlite/SqliteAuditReposit
 import { SqliteCategoryRepository } from '../repositories/sqlite/SqliteCategoryRepository.js';
 import { SqliteCategoryRuleRepository } from '../repositories/sqlite/SqliteCategoryRuleRepository.js';
 import { SqliteMerchantRuleRepository } from '../repositories/sqlite/SqliteMerchantRuleRepository.js';
-import { LocalAuditService } from '../services/LocalAuditService.js';
-import { LocalCategorizationService } from '../services/LocalCategorizationService.js';
-import { MerchantDetectionService } from '../services/MerchantDetectionService.js';
-import { MerchantCategorizationService } from '../services/MerchantCategorizationService.js';
-import { LocalDeduplicationService } from '../services/LocalDeduplicationService.js';
-import { LocalStatementImportService } from '../services/LocalStatementImportService.js';
-import { LocalTransactionService } from '../services/LocalTransactionService.js';
-import { DEFAULT_TENANT_ID } from '../config/index.js';
+import { LocalAuditService } from '@dollarmind/core/services/LocalAuditService.js';
+import { LocalCategorizationService } from '@dollarmind/core/services/LocalCategorizationService.js';
+import { MerchantDetectionService } from '@dollarmind/core/services/MerchantDetectionService.js';
+import { MerchantCategorizationService } from '@dollarmind/core/services/MerchantCategorizationService.js';
+import { LocalDeduplicationService } from '@dollarmind/core/services/LocalDeduplicationService.js';
+import { LocalStatementImportService } from '@dollarmind/core/services/LocalStatementImportService.js';
+import { LocalTransactionService } from '@dollarmind/core/services/LocalTransactionService.js';
+import type { MerchantRulesConfig } from '@dollarmind/core/services/MerchantDetectionService.js';
+import type { StatementParserRules } from '@dollarmind/core/parsers/bank/statementParser.js';
+import type { ExtractionAdapters } from '@dollarmind/core/ingestion/extract.js';
+import { getOcrProvider } from '@dollarmind/core/ingestion/ocr.js';
+import { extractPdf } from '@dollarmind/core/ingestion/pdf.js';
+import { NodeFileStore } from '../services/NodeFileStore.js';
+import { DEFAULT_TENANT_ID, loadMerchantRules, loadStatementParserRules } from '../config/index.js';
+
+const extractionAdapters: ExtractionAdapters = { ocr: getOcrProvider(), extractPdf };
+
+const merchantRulesConfig = loadMerchantRules<MerchantRulesConfig>();
 
 const CSV_A = `Date,Description,Amount,Balance
 2026-06-01,WOOLWORTHS SANDTON,-350.00,10000.00
@@ -36,22 +46,27 @@ const CSV_B = `Date,Description,Amount,Balance
 `;
 
 function makeImport(db: Db) {
-  return new LocalStatementImportService({
-    accounts: new SqliteAccountRepository(db),
-    documents: new SqliteDocumentRepository(db),
-    statements: new SqliteBankStatementRepository(db),
-    transactions: new SqliteTransactionRepository(db),
-    issues: new SqliteIssueRepository(db),
-    merchantCategorizer: new MerchantCategorizationService(
-      new SqliteMerchantRuleRepository(db),
-      new SqliteCategoryRepository(db),
-      new SqliteCategoryRuleRepository(db),
-      new MerchantDetectionService(),
-      new LocalCategorizationService(new SqliteCategoryRuleRepository(db)),
-    ),
-    dedup: new LocalDeduplicationService(),
-    audit: new LocalAuditService(new SqliteAuditRepository(db)),
-  });
+  return new LocalStatementImportService(
+    {
+      accounts: new SqliteAccountRepository(db),
+      documents: new SqliteDocumentRepository(db),
+      statements: new SqliteBankStatementRepository(db),
+      transactions: new SqliteTransactionRepository(db),
+      issues: new SqliteIssueRepository(db),
+      merchantCategorizer: new MerchantCategorizationService(
+        new SqliteMerchantRuleRepository(db),
+        new SqliteCategoryRepository(db),
+        new SqliteCategoryRuleRepository(db),
+        new MerchantDetectionService(merchantRulesConfig),
+        new LocalCategorizationService(new SqliteCategoryRuleRepository(db), merchantRulesConfig),
+      ),
+      dedup: new LocalDeduplicationService(),
+      audit: new LocalAuditService(new SqliteAuditRepository(db)),
+    },
+    loadStatementParserRules<StatementParserRules>(),
+    new NodeFileStore('test-statements'),
+    extractionAdapters,
+  );
 }
 
 function file(content: string, name = 'stmt.csv') {

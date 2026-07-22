@@ -2,10 +2,10 @@
  * SQLite-backed AccountRepository (minimal).
  */
 import type { Db } from '../../db/connection.js';
-import type { Account } from '../../models/index.js';
-import type { AccountRepository } from '../AccountRepository.js';
-import { newId, nowIso } from '../../utils/id.js';
-import { rowToAccount, type Row } from './rowMappers.js';
+import type { Account } from '@dollarmind/core/models/index.js';
+import type { AccountRepository } from '@dollarmind/core/repositories/AccountRepository.js';
+import { newId, nowIso } from '@dollarmind/core/utils/id.js';
+import { rowToAccount, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteAccountRepository implements AccountRepository {
   constructor(private readonly db: Db) {}

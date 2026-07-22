@@ -5,7 +5,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 import { adaptiveLearningService, merchantRuleRepository } from '../services/index.js';
-import { ValidationError } from '../utils/errors.js';
+import { ValidationError } from '@dollarmind/core/utils/errors.js';
 
 const createSchema = z.object({
   merchant: z.string().min(1),

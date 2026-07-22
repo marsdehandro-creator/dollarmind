@@ -8,7 +8,7 @@
  */
 import type { Db } from './connection.js';
 import { loadCategoryRules, loadMerchantRules } from '../config/index.js';
-import { newId, nowIso } from '../utils/id.js';
+import { newId, nowIso } from '@dollarmind/core/utils/id.js';
 
 interface CategoryRulesConfig {
   categories: string[];

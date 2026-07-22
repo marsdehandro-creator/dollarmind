@@ -2,9 +2,9 @@
  * SQLite-backed AuditRepository. Append-only (docs/security.md §5).
  */
 import type { Db } from '../../db/connection.js';
-import type { AuditLog } from '../../models/index.js';
-import type { AuditRepository } from '../AuditRepository.js';
-import { rowToAudit, type Row } from './rowMappers.js';
+import type { AuditLog } from '@dollarmind/core/models/index.js';
+import type { AuditRepository } from '@dollarmind/core/repositories/AuditRepository.js';
+import { rowToAudit, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 const j = (v: unknown): string | null => (v == null ? null : JSON.stringify(v));
 

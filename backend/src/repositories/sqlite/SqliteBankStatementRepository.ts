@@ -2,9 +2,9 @@
  * SQLite-backed BankStatementRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { BankStatement } from '../../models/index.js';
-import type { BankStatementRepository } from '../BankStatementRepository.js';
-import { rowToBankStatement, type Row } from './rowMappers.js';
+import type { BankStatement } from '@dollarmind/core/models/index.js';
+import type { BankStatementRepository } from '@dollarmind/core/repositories/BankStatementRepository.js';
+import { rowToBankStatement, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteBankStatementRepository implements BankStatementRepository {
   constructor(private readonly db: Db) {}

@@ -2,10 +2,10 @@
  * SQLite-backed UserRepository (persists Phase 6 auth).
  */
 import type { Db } from '../../db/connection.js';
-import type { RoleName, User } from '../../models/index.js';
-import type { UserRepository } from '../UserRepository.js';
-import { nowIso } from '../../utils/id.js';
-import { rowToUser, type Row } from './rowMappers.js';
+import type { RoleName, User } from '@dollarmind/core/models/index.js';
+import type { UserRepository } from '@dollarmind/core/repositories/UserRepository.js';
+import { nowIso } from '@dollarmind/core/utils/id.js';
+import { rowToUser, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;

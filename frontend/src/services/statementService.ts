@@ -1,7 +1,8 @@
 /**
- * Bank statement API client.
+ * Bank statement local data access. Calls the on-device
+ * statementImportService directly — same shapes the backend used to return.
  */
-import { apiGet, apiUpload } from './apiClient.js';
+import { getContainer } from '../local/container.js';
 
 export interface BankStatement {
   id: string;
@@ -30,14 +31,20 @@ export interface StatementUploadResult {
   diagnostics?: string[];
 }
 
-export function uploadStatement(file: File): Promise<StatementUploadResult> {
-  const form = new FormData();
-  form.append('file', file);
-  return apiUpload<StatementUploadResult>('/statements/upload', form);
+export async function uploadStatement(file: File): Promise<StatementUploadResult> {
+  const { statementImportService, tenantId } = await getContainer();
+  const buffer = new Uint8Array(await file.arrayBuffer());
+  const result = await statementImportService.uploadStatement({
+    tenantId,
+    file: { buffer, originalName: file.name, mimeType: file.type || 'application/octet-stream', size: file.size },
+  });
+  return result as unknown as StatementUploadResult;
 }
 
-export function getStatementHistory(): Promise<{ statements: StatementSummary[] }> {
-  return apiGet<{ statements: StatementSummary[] }>('/statements/history');
+export async function getStatementHistory(): Promise<{ statements: StatementSummary[] }> {
+  const { statementImportService, tenantId } = await getContainer();
+  const statements = await statementImportService.getStatementHistory(tenantId);
+  return { statements: statements as unknown as StatementSummary[] };
 }
 
 export interface StatementTransaction {
@@ -57,6 +64,8 @@ export interface StatementDetail {
   totals: { income: number; expense: number; count: number };
 }
 
-export function getStatementDetail(id: string): Promise<StatementDetail> {
-  return apiGet<StatementDetail>(`/statements/${id}`);
+export async function getStatementDetail(id: string): Promise<StatementDetail> {
+  const { statementImportService, tenantId } = await getContainer();
+  const detail = await statementImportService.getStatementDetail(tenantId, id);
+  return detail as unknown as StatementDetail;
 }

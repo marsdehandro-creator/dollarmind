@@ -10,9 +10,16 @@ import { SqliteSalarySlipRepository } from '../repositories/sqlite/SqliteSalaryS
 import { SqliteSalaryComponentRepository } from '../repositories/sqlite/SqliteSalaryComponentRepository.js';
 import { SqliteIssueRepository } from '../repositories/sqlite/SqliteIssueRepository.js';
 import { SqliteAuditRepository } from '../repositories/sqlite/SqliteAuditRepository.js';
-import { LocalAuditService } from '../services/LocalAuditService.js';
-import { LocalSalarySlipService } from '../services/LocalSalarySlipService.js';
-import { DEFAULT_TENANT_ID } from '../config/index.js';
+import { LocalAuditService } from '@dollarmind/core/services/LocalAuditService.js';
+import { LocalSalarySlipService } from '@dollarmind/core/services/LocalSalarySlipService.js';
+import type { SalaryParserRules } from '@dollarmind/core/parsers/payslip/payslipParser.js';
+import type { ExtractionAdapters } from '@dollarmind/core/ingestion/extract.js';
+import { getOcrProvider } from '@dollarmind/core/ingestion/ocr.js';
+import { extractPdf } from '@dollarmind/core/ingestion/pdf.js';
+import { NodeFileStore } from '../services/NodeFileStore.js';
+import { DEFAULT_TENANT_ID, loadSalaryParserRules } from '../config/index.js';
+
+const extractionAdapters: ExtractionAdapters = { ocr: getOcrProvider(), extractPdf };
 
 const SAMPLE = `ACME Payroll
 Pay Period: 2026-06-01 to 2026-06-30
@@ -25,14 +32,19 @@ Net Pay             33572.88
 `;
 
 function makeService(db: Db) {
-  return new LocalSalarySlipService({
-    accounts: new SqliteAccountRepository(db),
-    documents: new SqliteDocumentRepository(db),
-    slips: new SqliteSalarySlipRepository(db),
-    components: new SqliteSalaryComponentRepository(db),
-    issues: new SqliteIssueRepository(db),
-    audit: new LocalAuditService(new SqliteAuditRepository(db)),
-  });
+  return new LocalSalarySlipService(
+    {
+      accounts: new SqliteAccountRepository(db),
+      documents: new SqliteDocumentRepository(db),
+      slips: new SqliteSalarySlipRepository(db),
+      components: new SqliteSalaryComponentRepository(db),
+      issues: new SqliteIssueRepository(db),
+      audit: new LocalAuditService(new SqliteAuditRepository(db)),
+    },
+    loadSalaryParserRules<SalaryParserRules>(),
+    new NodeFileStore('test-salary-slips'),
+    extractionAdapters,
+  );
 }
 
 function textFile(content: string) {

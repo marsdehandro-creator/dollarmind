@@ -2,10 +2,10 @@
  * SQLite-backed CashEntryRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { CashEntry } from '../../models/index.js';
-import type { CashAggregateOptions, CashEntryRepository } from '../CashEntryRepository.js';
-import type { CategoryAggregate, MonthCategoryTotal, MonthTotal } from '../TransactionRepository.js';
-import { rowToCashEntry, type Row } from './rowMappers.js';
+import type { CashEntry } from '@dollarmind/core/models/index.js';
+import type { CashAggregateOptions, CashEntryRepository } from '@dollarmind/core/repositories/CashEntryRepository.js';
+import type { CategoryAggregate, MonthCategoryTotal, MonthTotal } from '@dollarmind/core/repositories/TransactionRepository.js';
+import { rowToCashEntry, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteCashEntryRepository implements CashEntryRepository {
   constructor(private readonly db: Db) {}

@@ -7,10 +7,10 @@ import { SqliteUserRepository } from '../repositories/sqlite/SqliteUserRepositor
 import { SqliteUserSettingsRepository } from '../repositories/sqlite/SqliteUserSettingsRepository.js';
 import { SqliteUserSessionRepository } from '../repositories/sqlite/SqliteUserSessionRepository.js';
 import { SqliteAuditRepository } from '../repositories/sqlite/SqliteAuditRepository.js';
-import { LocalAuditService } from '../services/LocalAuditService.js';
-import { LocalAuthService } from '../services/LocalAuthService.js';
-import { LocalUserSettingsService } from '../services/LocalUserSettingsService.js';
-import { LocalSecurityService } from '../services/LocalSecurityService.js';
+import { LocalAuditService } from '@dollarmind/core/services/LocalAuditService.js';
+import { LocalAuthService } from '@dollarmind/core/services/LocalAuthService.js';
+import { LocalUserSettingsService } from '@dollarmind/core/services/LocalUserSettingsService.js';
+import { LocalSecurityService } from '@dollarmind/core/services/LocalSecurityService.js';
 import { DEFAULT_TENANT_ID } from '../config/index.js';
 
 const PASSWORD = 'CorrectHorseBattery1';
@@ -22,9 +22,9 @@ function build(db: Db) {
   return {
     users,
     sessions,
-    auth: new LocalAuthService(users, audit),
+    auth: new LocalAuthService(users, audit, 'test-jwt-secret', 3600),
     settings: new LocalUserSettingsService(new SqliteUserSettingsRepository(db), users, sessions, audit),
-    security: new LocalSecurityService(sessions, users, audit),
+    security: new LocalSecurityService(sessions, users, audit, 'test-jwt-secret', 3600),
   };
 }
 

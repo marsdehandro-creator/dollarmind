@@ -1,0 +1,9 @@
+{
+  "name": "dollarmind",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend",
+    "packages/*"
+  ]
+}

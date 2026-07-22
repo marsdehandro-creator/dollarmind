@@ -1,7 +1,8 @@
 /**
- * Cash entry API client. Amounts are integer cents.
+ * Cash entry local data access. Amounts are integer cents. Calls the
+ * on-device cashEntryService directly.
  */
-import { apiGet, apiPost } from './apiClient.js';
+import { getContainer } from '../local/container.js';
 
 export interface CashEntry {
   id: string;
@@ -21,10 +22,13 @@ export interface CreateCashEntryInput {
 }
 
 export async function listCashEntries(): Promise<CashEntry[]> {
-  const { entries } = await apiGet<{ entries: CashEntry[] }>('/cash/list');
-  return entries;
+  const { cashEntryService, tenantId } = await getContainer();
+  const entries = await cashEntryService.list(tenantId);
+  return entries as unknown as CashEntry[];
 }
 
-export function createCashEntry(input: CreateCashEntryInput): Promise<{ entry: CashEntry }> {
-  return apiPost('/cash/create', input);
+export async function createCashEntry(input: CreateCashEntryInput): Promise<{ entry: CashEntry }> {
+  const { cashEntryService, tenantId } = await getContainer();
+  const entry = await cashEntryService.create(tenantId, input);
+  return { entry: entry as unknown as CashEntry };
 }

@@ -2,10 +2,10 @@
  * SQLite-backed DocumentRepository.
  */
 import type { Db } from '../../db/connection.js';
-import type { Document } from '../../models/index.js';
-import type { DocumentRepository } from '../DocumentRepository.js';
-import { nowIso } from '../../utils/id.js';
-import { rowToDocument, type Row } from './rowMappers.js';
+import type { Document } from '@dollarmind/core/models/index.js';
+import type { DocumentRepository } from '@dollarmind/core/repositories/DocumentRepository.js';
+import { nowIso } from '@dollarmind/core/utils/id.js';
+import { rowToDocument, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteDocumentRepository implements DocumentRepository {
   constructor(private readonly db: Db) {}
@@ -14,8 +14,8 @@ export class SqliteDocumentRepository implements DocumentRepository {
     this.db
       .prepare(
         `INSERT INTO document (id, tenant_id, account_id, doc_type, file_path, file_hash,
-           mime_type, byte_size, parser_id, parse_status, parse_meta, uploaded_at, archived_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+           mime_type, byte_size, parser_id, parse_status, parse_meta, uploaded_at, archived_at, blob_data)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
         doc.id,
@@ -31,6 +31,7 @@ export class SqliteDocumentRepository implements DocumentRepository {
         doc.parseMeta == null ? null : JSON.stringify(doc.parseMeta),
         doc.uploadedAt,
         doc.archivedAt,
+        doc.blobData,
       );
     return doc;
   }

@@ -3,7 +3,7 @@
  * (docs/security.md §4.1).
  */
 import type { Db } from '../../db/connection.js';
-import type { Transaction } from '../../models/index.js';
+import type { Transaction } from '@dollarmind/core/models/index.js';
 import type {
   AggregateOptions,
   CategoryAggregate,
@@ -11,9 +11,9 @@ import type {
   MonthTotal,
   TransactionFilterCriteria,
   TransactionRepository,
-} from '../TransactionRepository.js';
-import { nowIso } from '../../utils/id.js';
-import { rowToTransaction, type Row } from './rowMappers.js';
+} from '@dollarmind/core/repositories/TransactionRepository.js';
+import { nowIso } from '@dollarmind/core/utils/id.js';
+import { rowToTransaction, type Row } from '@dollarmind/core/repositories/rowMappers.js';
 
 export class SqliteTransactionRepository implements TransactionRepository {
   constructor(private readonly db: Db) {}
