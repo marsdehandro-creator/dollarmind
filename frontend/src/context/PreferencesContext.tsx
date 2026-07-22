@@ -1,12 +1,11 @@
 /**
- * PreferencesContext — loads the user's preferences after auth and applies them
- * globally: theme (via a data-theme attribute), currency (via the money util),
- * and exposes chartType / defaultMonth for components.
+ * PreferencesContext — loads the on-device preferences on mount and applies
+ * them globally: theme (via a data-theme attribute), currency (via the money
+ * util), and exposes chartType / defaultMonth for components.
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { getPreferences, updatePreferences as apiUpdate, type UserSettings } from '../services/settingsService.js';
 import { setCurrency } from '../utils/money.js';
-import { useAuth } from '../hooks/useAuth.js';
 
 interface PreferencesState {
   preferences: UserSettings | null;
@@ -30,7 +29,6 @@ function applyPreferences(p: UserSettings): void {
 }
 
 export function PreferencesProvider({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useAuth();
   const [preferences, setPreferences] = useState<UserSettings | null>(null);
 
   const refresh = useCallback(async () => {
@@ -40,13 +38,8 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      void refresh();
-    } else {
-      setPreferences(null);
-      document.documentElement.removeAttribute('data-theme');
-    }
-  }, [isAuthenticated, refresh]);
+    void refresh();
+  }, [refresh]);
 
   const update = useCallback(async (patch: Partial<UserSettings>) => {
     const p = await apiUpdate(patch);

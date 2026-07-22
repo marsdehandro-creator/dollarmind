@@ -1,13 +1,10 @@
 /**
- * V1 offline auth context.
- *
- * There is no server and no account system in V1 — every install is a single
- * local user (the pilot tenant). The context auto-"authenticates" on mount so
- * routing/pages built around isAuthenticated keep working unchanged. A real
- * gate (PIN lock) replaces this open-by-default state in a later phase
- * (docs/v1-offline-product-spec.md) without needing to touch this shape again.
+ * V1 local-user identity. There is no server and no account system — every
+ * install is a single local user (the pilot tenant), always present. The
+ * real security gate is the PIN lock (PinLockContext.tsx), not a login
+ * screen — see App.tsx / AppShell.tsx's "Lock" button.
  */
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import { DEFAULT_TENANT_ID } from '@dollarmind/core/constants.js';
 
 export interface LocalUser {
@@ -25,30 +22,13 @@ const LOCAL_USER: LocalUser = {
 };
 
 interface AuthState {
-  user: LocalUser | null;
-  isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  user: LocalUser;
 }
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<LocalUser | null>(LOCAL_USER);
-
-  const value = useMemo<AuthState>(
-    () => ({
-      user,
-      isAuthenticated: user !== null,
-      // No-ops: V1 has no accounts. Kept so LoginPage/routing don't need changes.
-      login: async () => setUser(LOCAL_USER),
-      register: async () => setUser(LOCAL_USER),
-      logout: () => setUser(null),
-    }),
-    [user],
-  );
-
+  const value = useMemo<AuthState>(() => ({ user: LOCAL_USER }), []);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

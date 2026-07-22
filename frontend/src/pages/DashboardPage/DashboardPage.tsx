@@ -66,7 +66,7 @@ export function DashboardPage() {
     <section>
       <h1>Dashboard</h1>
       <p style={{ color: 'var(--fg-muted)', marginTop: '-0.5rem' }}>
-        Welcome back{user ? `, ${user.email}` : ''}
+        Welcome back, {user.email}
         {data ? ` · ${data.range.from} → ${data.range.to}` : ''}
       </p>
 

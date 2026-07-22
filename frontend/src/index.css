@@ -280,11 +280,4 @@ tbody tr:hover td { background: rgba(0, 198, 255, 0.05); }
 .dm-splash .dm-tag { color: var(--fg-muted); letter-spacing: 0.24em; text-transform: uppercase; font-size: 0.72rem; }
 .dm-spark { width: 160px; height: 3px; border-radius: 3px; background: var(--grad-brand); box-shadow: 0 0 18px rgba(0, 198, 255, 0.6); }
 
-.dm-auth {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem;
-  background: radial-gradient(900px 600px at 50% 20%, #121a3a, #0a0f2c 70%);
-}
-.dm-auth-card { width: 100%; max-width: 400px; text-align: center; }
-.dm-auth-card form { text-align: left; }
-
 @keyframes dm-fade { from { opacity: 0; } to { opacity: 1; } }

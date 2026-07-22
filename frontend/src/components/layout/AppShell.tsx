@@ -9,9 +9,11 @@ import { Logo } from '../brand/Logo.js';
 import { useAuth } from '../../hooks/useAuth.js';
 import { useMediaQuery } from '../../hooks/useMediaQuery.js';
 import { usePreferences } from '../../context/PreferencesContext.js';
+import { usePinLock } from '../../context/PinLockContext.js';
 
 export function AppShell() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
+  const { hasPin, lockNow } = usePinLock();
   const { preferences } = usePreferences();
   const isNarrow = useMediaQuery('(max-width: 820px)');
 
@@ -31,9 +33,13 @@ export function AppShell() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
             <span style={{ color: 'var(--fg-muted)', fontSize: '0.85rem' }}>
-              {user?.email}
+              {user.email}
             </span>
-            <button type="button" className="btn-ghost" onClick={logout}>Log out</button>
+            {hasPin && (
+              <button type="button" className="btn-ghost" onClick={lockNow} title="Lock the app until your PIN is entered again">
+                Lock
+              </button>
+            )}
           </div>
         </header>
         <main className="dm-content">
