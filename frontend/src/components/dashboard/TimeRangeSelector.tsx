@@ -15,7 +15,7 @@ export interface DateRange {
 const PRESETS: Array<{ id: RangePreset; label: string }> = [
   { id: 'day', label: 'Last day' },
   { id: 'week', label: 'Last week' },
-  { id: 'month', label: 'Last month' },
+  { id: 'month', label: 'This month' },
   { id: '3months', label: 'Last 3 months' },
   { id: '6months', label: 'Last 6 months' },
   { id: 'ytd', label: 'Year to date' },
@@ -33,7 +33,17 @@ export function presetToRange(preset: RangePreset, custom?: DateRange): DateRang
   switch (preset) {
     case 'day': return { from: daysAgo(1), to };
     case 'week': return { from: daysAgo(7), to };
-    case 'month': return { from: daysAgo(30), to };
+    case 'month': {
+      // A real calendar month (1st -> last day), not a rolling 30 days.
+      // A rolling window ending "today" was excluding the current pay
+      // period's own payslip whenever its period-end (or pay date) fell
+      // later in the month than today — the payslip would show correctly
+      // on the Salary page (which applies no date filter) but vanish from
+      // the dashboard's default view, looking like a bug on first upload.
+      const first = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1));
+      const last = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() + 1, 0));
+      return { from: iso(first), to: iso(last) };
+    }
     case '3months': return { from: daysAgo(90), to };
     case '6months': return { from: daysAgo(182), to };
     case 'ytd': return { from: `${today.getUTCFullYear()}-01-01`, to };
