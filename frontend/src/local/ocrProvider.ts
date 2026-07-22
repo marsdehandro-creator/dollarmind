@@ -9,12 +9,17 @@ import { createWorker, type Worker } from 'tesseract.js';
 import { NullOcrProvider, type OcrProvider, type OcrResult } from '@dollarmind/core/ingestion/ocrTypes.js';
 import { ingestError } from '@dollarmind/core/utils/ingestErrors.js';
 
-const ASSET_BASE = `${import.meta.env.BASE_URL}assets/tesseract`;
-// KNOWN ISSUE: worker init has been observed to hang indefinitely in some
-// environments with no error surfaced (root cause not yet isolated — no
-// worker/core/lang asset requests are ever seen, suggesting the Worker never
-// finishes constructing). This timeout turns that hang into a clear, timely
-// error instead of a permanent spinner while that's investigated further.
+// Must be a fully-qualified absolute URL (scheme + host), not just an
+// absolute path. tesseract.js's worker calls `importScripts()` on these
+// paths from inside its own worker context — a `/`-prefixed path resolves
+// fine on the main thread but `importScripts()` rejects it there with
+// "The URL '...' is invalid" (confirmed: this was the root cause of OCR
+// hanging/failing to start — createWorker() was rejecting immediately with
+// that error, silently, since nothing awaited or logged it before this fix).
+const ASSET_BASE = `${window.location.origin}${import.meta.env.BASE_URL}assets/tesseract`;
+// Defensive cap in case a slow device makes worker/wasm-core/trained-data
+// loading take unusually long — turns that into a clear error instead of an
+// indefinite spinner.
 const WORKER_INIT_TIMEOUT_MS = 30_000;
 
 let workerPromise: Promise<Worker> | null = null;
