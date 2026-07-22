@@ -21,5 +21,4 @@ export const navItems: NavItem[] = [
   { to: '/issues', label: 'Issues', short: 'Issues' },
   { to: '/sars', label: 'SARS', short: 'SARS' },
   { to: '/settings', label: 'Settings', short: 'Settings' },
-  { to: '/sessions', label: 'Sessions', short: 'Sess' },
 ];

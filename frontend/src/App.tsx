@@ -22,7 +22,6 @@ import { SpendingPage } from './pages/SpendingPage/index.js';
 import { ManualExpensesPage } from './pages/ManualExpensesPage/index.js';
 import { CashTrackingPage } from './pages/CashTrackingPage/index.js';
 import { SettingsPage } from './pages/SettingsPage/index.js';
-import { SessionsPage } from './pages/SessionsPage/index.js';
 import { GoalsPage } from './pages/GoalsPage.js';
 import { IssuesPage } from './pages/IssuesPage.js';
 import { SarsGuidancePage } from './pages/SarsGuidancePage.js';
@@ -56,7 +55,6 @@ export function App() {
           <Route path="issues" element={<IssuesPage />} />
           <Route path="sars" element={<SarsGuidancePage />} />
           <Route path="settings" element={<SettingsPage />} />
-          <Route path="sessions" element={<SessionsPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Route>

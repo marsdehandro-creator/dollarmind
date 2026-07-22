@@ -26,7 +26,6 @@ const LOCAL_USER: LocalUser = {
 
 interface AuthState {
   user: LocalUser | null;
-  sessionId: string | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
@@ -41,7 +40,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AuthState>(
     () => ({
       user,
-      sessionId: null,
       isAuthenticated: user !== null,
       // No-ops: V1 has no accounts. Kept so LoginPage/routing don't need changes.
       login: async () => setUser(LOCAL_USER),

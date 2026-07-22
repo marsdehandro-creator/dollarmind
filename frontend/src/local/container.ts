@@ -25,6 +25,7 @@ import { LocalMerchantRuleRepository } from '@dollarmind/core/repositories/local
 import { LocalManualExpenseRepository } from '@dollarmind/core/repositories/local/LocalManualExpenseRepository.js';
 import { LocalCashEntryRepository } from '@dollarmind/core/repositories/local/LocalCashEntryRepository.js';
 import { LocalGoalRepository } from '@dollarmind/core/repositories/local/LocalGoalRepository.js';
+import { LocalUserSettingsRepository } from '@dollarmind/core/repositories/local/LocalUserSettingsRepository.js';
 
 import { LocalAuditService } from '@dollarmind/core/services/LocalAuditService.js';
 import { LocalSalarySlipService } from '@dollarmind/core/services/LocalSalarySlipService.js';
@@ -59,6 +60,7 @@ export interface LocalContainer {
   goalRepository: LocalGoalRepository;
   bankStatementRepository: LocalBankStatementRepository;
   salarySlipRepository: LocalSalarySlipRepository;
+  userSettingsRepository: LocalUserSettingsRepository;
 
   auditService: LocalAuditService;
   salarySlipService: LocalSalarySlipService;
@@ -93,6 +95,7 @@ async function build(): Promise<LocalContainer> {
   const manualExpenseRepository = new LocalManualExpenseRepository(db);
   const cashEntryRepository = new LocalCashEntryRepository(db);
   const goalRepository = new LocalGoalRepository(db);
+  const userSettingsRepository = new LocalUserSettingsRepository(db);
 
   const auditService = new LocalAuditService(auditRepository);
   const salarySlipService = new LocalSalarySlipService(
@@ -189,6 +192,7 @@ async function build(): Promise<LocalContainer> {
     goalRepository,
     bankStatementRepository,
     salarySlipRepository,
+    userSettingsRepository,
     auditService,
     salarySlipService,
     statementImportService,

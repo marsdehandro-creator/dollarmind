@@ -31,7 +31,7 @@ export function AppShell() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
             <span style={{ color: 'var(--fg-muted)', fontSize: '0.85rem' }}>
-              {preferences?.displayName || user?.email}
+              {user?.email}
             </span>
             <button type="button" className="btn-ghost" onClick={logout}>Log out</button>
           </div>

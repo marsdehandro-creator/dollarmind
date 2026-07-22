@@ -1,12 +1,15 @@
 /**
- * Settings API client.
+ * On-device preferences. V1 has no accounts (no profile, no password) — see
+ * AuthContext.tsx — so this only covers display preferences (theme,
+ * currency, chart type, layout, default month), stored in the on-device
+ * user_settings table under a single local-user row (DEFAULT_TENANT_ID
+ * stands in for both userId and tenantId, matching AuthContext's LOCAL_USER).
  */
-import { apiGet, apiPost } from './apiClient.js';
+import { getContainer } from '../local/container.js';
+import { DEFAULT_TENANT_ID } from '@dollarmind/core/constants.js';
+import { nowIso } from '@dollarmind/core/utils/id.js';
 
 export interface UserSettings {
-  userId: string;
-  tenantId: string;
-  displayName: string | null;
   theme: 'light' | 'dark' | 'system';
   currency: string;
   chartType: 'bar' | 'line';
@@ -14,21 +17,37 @@ export interface UserSettings {
   layout: 'auto' | 'sidebar' | 'bottomnav';
 }
 
+const DEFAULTS: UserSettings = {
+  theme: 'system',
+  currency: 'ZAR',
+  chartType: 'bar',
+  defaultMonth: 'current',
+  layout: 'auto',
+};
+
 export async function getPreferences(): Promise<UserSettings> {
-  const { settings } = await apiGet<{ settings: UserSettings }>('/settings/preferences/get');
-  return settings;
+  const { userSettingsRepository } = await getContainer();
+  const existing = await userSettingsRepository.findByUser(DEFAULT_TENANT_ID);
+  if (existing) {
+    const { theme, currency, chartType, defaultMonth, layout } = existing;
+    return { theme, currency, chartType, defaultMonth, layout };
+  }
+  return DEFAULTS;
 }
 
-export async function updatePreferences(patch: Partial<Pick<UserSettings, 'theme' | 'currency' | 'chartType' | 'defaultMonth' | 'layout'>>): Promise<UserSettings> {
-  const { settings } = await apiPost<{ settings: UserSettings }>('/settings/preferences/update', patch);
-  return settings;
-}
-
-export async function updateProfile(displayName: string): Promise<UserSettings> {
-  const { settings } = await apiPost<{ settings: UserSettings }>('/settings/profile/update', { displayName });
-  return settings;
-}
-
-export function updatePassword(currentPassword: string, newPassword: string): Promise<{ ok: boolean }> {
-  return apiPost('/settings/password/update', { currentPassword, newPassword });
+export async function updatePreferences(patch: Partial<UserSettings>): Promise<UserSettings> {
+  const { userSettingsRepository } = await getContainer();
+  const current = await getPreferences();
+  const merged: UserSettings = { ...current, ...patch };
+  const now = nowIso();
+  const existing = await userSettingsRepository.findByUser(DEFAULT_TENANT_ID);
+  await userSettingsRepository.save({
+    userId: DEFAULT_TENANT_ID,
+    tenantId: DEFAULT_TENANT_ID,
+    displayName: null,
+    ...merged,
+    createdAt: existing?.createdAt ?? now,
+    updatedAt: now,
+  });
+  return merged;
 }

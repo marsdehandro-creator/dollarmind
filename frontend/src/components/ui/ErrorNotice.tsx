@@ -1,8 +1,9 @@
 /**
- * Renders a business error (ApiError) with its message + actionable suggestion,
- * coloured by severity. Falls back to a plain message for generic errors.
+ * Renders a business error (IngestError, from the on-device ingestion
+ * pipeline) with its message + actionable suggestion, coloured by severity.
+ * Falls back to a plain message for generic errors.
  */
-import { ApiError } from '../../services/apiClient.js';
+import { IngestError } from '@dollarmind/core/utils/ingestErrors.js';
 
 const SEVERITY_COLOR: Record<string, string> = {
   info: 'var(--blue)',
@@ -12,7 +13,7 @@ const SEVERITY_COLOR: Record<string, string> = {
 
 export function ErrorNotice({ error }: { error: unknown }) {
   if (!error) return null;
-  const api = error instanceof ApiError ? error : null;
+  const api = error instanceof IngestError ? error : null;
   const message = api?.message ?? (error instanceof Error ? error.message : 'Something went wrong');
   const color = api?.severity ? SEVERITY_COLOR[api.severity] ?? 'var(--danger)' : 'var(--danger)';
 
